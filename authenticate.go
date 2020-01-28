@@ -19,7 +19,7 @@ func getClient(config *oauth2.Config) *http.Client {
 	// The file token.json stores the user's access and refresh tokens, and is
 	// created automatically when the authorization flow completes for the first
 	// time.
-	tokFile := "token.json"
+	tokFile := AuthenticationToken
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
@@ -69,8 +69,8 @@ func saveToken(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
-func main() {
-	b, err := ioutil.ReadFile("credentials.json")
+func authenticateClient() *http.Client {
+	b, err := ioutil.ReadFile(Credentials)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
@@ -80,24 +80,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := getClient(config)
-
-	srv, err := gmail.New(client)
-	if err != nil {
-		log.Fatalf("Unable to retrieve Gmail client: %v", err)
-	}
-
-	user := "me"
-	r, err := srv.Users.Labels.List(user).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve labels: %v", err)
-	}
-	if len(r.Labels) == 0 {
-		fmt.Println("No labels found.")
-		return
-	}
-	fmt.Println("Labels:")
-	for _, l := range r.Labels {
-		fmt.Printf("- %s\n", l.Name)
-	}
+	return getClient(config)
 }
