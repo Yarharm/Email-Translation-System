@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 )
 
 func main() {
@@ -10,6 +11,14 @@ func main() {
 	unreadMessages := getUnreadMessages(client)
 
 	for _, msg := range unreadMessages {
-		fmt.Printf("%s --> %s\n", msg.gmailID, msg.snippet)
+		responseTexts, err := translateMessages(msg.snippet, TranslationCode)
+		if err != nil {
+			log.Fatalf("Translation failed: %v", err)
+			return
+		}
+		for _, translatedText := range responseTexts {
+			fmt.Println(translatedText)
+		}
 	}
+	return
 }
