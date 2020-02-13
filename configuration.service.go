@@ -7,7 +7,9 @@ import (
 )
 
 type configService struct {
+	TranslationLanguage  string `json:"translationLanguage"`
 	TranslationRecipient string `json:"translationRecipient"`
+	Subject              string `json:"subject"`
 }
 
 // Retrieves a configuration from a local file.

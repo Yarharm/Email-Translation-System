@@ -15,15 +15,14 @@ func main() {
 	unreadMessages := getUnreadMessages(client)
 
 	for _, msg := range unreadMessages {
-		responseTexts, err := translateMessages(msg.snippet, TranslationCode)
+		responseTexts, err := translateMessages(msg.snippet, config.TranslationLanguage)
 		if err != nil {
 			log.Fatalf("Translation failed: %v", err)
 			return
 		}
 		for _, translatedText := range responseTexts {
-			fmt.Println(config)
-			fmt.Println(translatedText)
+			sendTranslatedText(client, translatedText, config)
+			fmt.Println("Successfully sent translated email")
 		}
 	}
-	return
 }
