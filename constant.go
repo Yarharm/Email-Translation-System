@@ -22,4 +22,7 @@ const (
 
 	// TranslationCode specifies translation language
 	TranslationCode string = "en-ru"
+
+	// ConfigurationFile path to the configuration file
+	ConfigurationFile string = "config.json"
 )
