@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/base64"
 	"log"
-	"net/http"
 
 	gmail "google.golang.org/api/gmail/v1"
 )
@@ -12,13 +12,26 @@ type message struct {
 	snippet string
 }
 
-func getUnreadMessages(client *http.Client) []message {
-	service, err := gmail.New(client)
+func sendTranslatedText(client *gmail.Service, message string, config *configService) {
+	msg := buildResponseMessage(message, config)
+	_, err := client.Users.Messages.Send(TargetUserID, &msg).Do()
 	if err != nil {
-		log.Fatalf("Unable to create Gmail service: %v", err)
+		log.Fatalf("Unable to send translated text %v", err)
 	}
+}
 
-	return listMessages(service, TargetUserID, UnreadMessagesQuery)
+func buildResponseMessage(body string, config *configService) gmail.Message {
+	var message gmail.Message
+	messageStr := []byte("From: 'me'\r\n" +
+		"To: " + config.TranslationRecipient + "\r\n" +
+		"Subject: " + config.Subject + " \r\n" +
+		"\r\n" + body)
+	message.Raw = base64.RawURLEncoding.EncodeToString((messageStr))
+	return message
+}
+
+func getUnreadMessages(client *gmail.Service) []message {
+	return listMessages(client, TargetUserID, UnreadMessagesQuery)
 }
 
 func listMessages(service *gmail.Service, userID string, query string) []message {

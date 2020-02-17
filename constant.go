@@ -20,9 +20,6 @@ const (
 	// YandexTranslateDomain translation API domain
 	YandexTranslateDomain string = "https://translate.yandex.net/api/v1.5/tr.json/translate"
 
-	// TranslationCode specifies translation language
-	TranslationCode string = "en-ru"
-
 	// ConfigurationFile path to the configuration file
 	ConfigurationFile string = "config.json"
 )
